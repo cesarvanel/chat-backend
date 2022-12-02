@@ -2,8 +2,8 @@ import Jwt from "jsonwebtoken";
 import User from "@resources/user/user.interface";
 import Token from "@utils/interfaces/token.interface";
 
-export const CreateToken = (user: User): string => {
-  return Jwt.sign({ id: user.userToken }, process.env.JWT_TOKEN as Jwt.Secret, {
+export const CreateToken = (User: User): string => {
+  return Jwt.sign({ id: User.userToken}, process.env.JWT_TOKEN as Jwt.Secret, {
     expiresIn: "1d",
   });
 };

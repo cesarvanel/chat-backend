@@ -4,7 +4,7 @@ const validateEnv = () =>{
 
     cleanEnv(process.env, {
         NODE_ENV:str({
-            choices:['developement', 'production']
+            choices:['development', 'production']
         }), 
         MONGO_USER:str(), 
         MONGO_PASSWORD:str(), 

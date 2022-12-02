@@ -1,7 +1,13 @@
-import { model, Schema} from "mongoose";
+import { model, Schema, Types} from "mongoose";
+import bcrypt from 'bcrypt';
 import User from '@resources/user/user.interface'; 
 
-const UserSchema = new Schema({
+const UserSchema : Schema<User> = new Schema({
+    _id:{
+        type:Types.ObjectId, 
+        required:true,
+        auto:true
+    },
     userName:{
         type:String, 
         required:true
@@ -33,5 +39,6 @@ const UserSchema = new Schema({
         required:true
     }
 }, {timestamps:true})
+
 
 export default model<User>('User', UserSchema); 
