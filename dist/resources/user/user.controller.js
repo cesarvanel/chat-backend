@@ -17,24 +17,49 @@ const http_exception_1 = __importDefault(require("@utils/exceptions/http.excepti
 const validation_middleware_1 = __importDefault(require("@middlewares/validation.middleware"));
 const user_validation_1 = __importDefault(require("@resources/user/user.validation"));
 const user_service_1 = __importDefault(require("@resources/user/user.service"));
+const authenticated_middleware_1 = __importDefault(require("@middlewares/authenticated.middleware"));
 class UserController {
     constructor() {
         this.path = "/users";
         this.router = (0, express_1.Router)();
         this.UserService = new user_service_1.default();
-        this.create = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        this.register = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = yield this.UserService.createUser(req.body);
-                res.status(201).json({ user });
+                const { userName, userEmail, userPwd, isAdmin } = req.body;
+                console.log('req.body', req.body);
+                const token = yield this.UserService.registerUser(userName, userEmail, userPwd);
+                res.status(201).json({ token });
             }
             catch (error) {
                 next(new http_exception_1.default(400, error.message));
             }
         });
+        this.login = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { userEmail, userPwd } = req.body;
+                const token = yield this.UserService.login(userEmail, userPwd);
+                res.status(200).json({ token });
+            }
+            catch (error) {
+                next(new http_exception_1.default(400, error.message));
+            }
+        });
+        this.getUser = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!req.user) {
+                    return next(new http_exception_1.default(200, 'No logged in user'));
+                }
+                res.status(200).json({ user: req.user });
+            }
+            catch (error) {
+            }
+        });
         this.initialiseRoute();
     }
     initialiseRoute() {
-        this.router.post(`${this.path}`, (0, validation_middleware_1.default)(user_validation_1.default.create));
+        this.router.post(`${this.path}/register`, (0, validation_middleware_1.default)(user_validation_1.default.register), this.register);
+        this.router.post(`${this.path}/login`, (0, validation_middleware_1.default)(user_validation_1.default.login), this.login);
+        this.router.get(`${this.path}`, authenticated_middleware_1.default, this.getUser);
     }
 }
 exports.default = UserController;

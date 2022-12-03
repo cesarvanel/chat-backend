@@ -48,6 +48,7 @@ class App {
         return __awaiter(this, void 0, void 0, function* () {
             const { MONGO_USER, MONGO_PASSWORD, MONGO_CLUSTER } = process.env;
             yield mongoose_1.default.connect(`mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_CLUSTER}.nyyzhoy.mongodb.net/?retryWrites=true&w=majority`);
+            console.log('connected to backend chat ');
         });
     }
     listen() {

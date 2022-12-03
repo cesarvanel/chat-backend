@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.VerifyToken = exports.CreateToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const CreateToken = (User) => {
-    return jsonwebtoken_1.default.sign({ id: User.userToken }, process.env.JWT_TOKEN, {
+    return jsonwebtoken_1.default.sign({ id: User._id }, process.env.JWT_TOKEN, {
         expiresIn: "1d",
     });
 };

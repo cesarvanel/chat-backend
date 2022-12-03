@@ -13,19 +13,48 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_models_1 = __importDefault(require("@resources/user/user.models"));
+const token_1 = __importDefault(require("@utils/interfaces/token"));
 class UserService {
     constructor() {
-        this.userModel = user_models_1.default;
-        // ** create a new user ;
-        this.createUser = (data) => __awaiter(this, void 0, void 0, function* () {
+        this.User = user_models_1.default;
+        /**
+         * register e new user
+         * @param data
+         * @returns a token
+         */
+        this.registerUser = (userName, userEmail, userPwd) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = yield this.userModel.create(data);
-                return user;
+                const user = yield this.User.create({
+                    userName,
+                    userEmail,
+                    userPwd,
+                });
+                const accessToken = token_1.default.CreateToken(user);
+                return accessToken;
             }
             catch (error) {
                 throw new Error("enable to create user");
             }
         });
+        this.login = (userEmail, userPwd) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const user = yield this.User.findOne({ userEmail });
+                if (!user) {
+                    throw new Error("Enable to find the user with this user Address");
+                }
+                const isValid = yield user.isValidPassword(userPwd);
+                if (isValid) {
+                    return token_1.default.CreateToken(user);
+                }
+                else {
+                    throw new Error("Wrong credentials given");
+                }
+            }
+            catch (error) {
+                throw new Error("enable to login user");
+            }
+        });
+        this.update_profile = (userAvatar) => __awaiter(this, void 0, void 0, function* () { });
     }
 }
 exports.default = UserService;

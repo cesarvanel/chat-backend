@@ -45,6 +45,8 @@ class App {
    await mongoose.connect(
       `mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_CLUSTER}.nyyzhoy.mongodb.net/?retryWrites=true&w=majority`
     );
+
+    console.log('connected to backend chat ');
   }
 
   public listen(): void {

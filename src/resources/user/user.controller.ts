@@ -4,33 +4,77 @@ import HttpException from "@utils/exceptions/http.exception";
 import validationMiddleWare from "@middlewares/validation.middleware";
 import validateUser from "@resources/user/user.validation";
 import UserService from "@resources/user/user.service";
+import authenticated from "@middlewares/authenticated.middleware";
 
 class UserController implements Controller {
   public path = "/users";
   public router = Router();
-  private UserService = new UserService()
+  private UserService = new UserService();
 
   constructor() {
     this.initialiseRoute();
-
   }
 
   private initialiseRoute(): void {
-    this.router.post(`${this.path}`, validationMiddleWare(validateUser.create));
+    this.router.post(
+      `${this.path}/register`,
+      validationMiddleWare(validateUser.register),
+      this.register
+    );
+
+    this.router.post(
+      `${this.path}/login`,
+      validationMiddleWare(validateUser.login),
+      this.login
+    );
+
+    this.router.get(`${this.path}`, authenticated, this.getUser);
   }
 
-  private create = async (
+  private register = async (
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<Response | void> => {
     try {
-        const user = await this.UserService.createUser(req.body)
-        res.status(201).json({user}); 
+      const {userName, userEmail, userPwd,isAdmin} = req.body
+      console.log('req.body', req.body)
+      const token = await this.UserService.registerUser(userName,userEmail, userPwd);
+      res.status(201).json({ token });
     } catch (error: any) {
-        next(new HttpException(400, error.message))
+      next(new HttpException(400, error.message));
+    }
+  };
+
+  private login = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> => {
+    try {
+      const { userEmail, userPwd } = req.body;
+      const token = await this.UserService.login(userEmail, userPwd);
+      res.status(200).json({ token });
+    } catch (error: any) {
+      next(new HttpException(400, error.message));
+    }
+  };
+
+  private getUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> => {
+    try {
+      if(!req.user){
+        return next(new HttpException(200, 'No logged in user'));
+      }
+      res.status(200).json({user:req.user})
+      
+    } catch (error) {
+      
     }
   };
 }
 
-export default UserController
+export default UserController;
