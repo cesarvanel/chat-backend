@@ -1,6 +1,7 @@
 import express, { Application } from "express";
 import cors from "cors";
 import morgan from "morgan";
+import path from "path";
 import compression from "compression";
 import Controller from "@utils/interfaces/controller.interface";
 import ErrorMiddleWare from "@middlewares/error.middleware";
@@ -28,6 +29,7 @@ class App {
     this.express.use(express.json());
     this.express.use(express.urlencoded({ extended: false }));
     this.express.use(compression());
+    this.express.use(express.static(path.join(__dirname, "uploads")));
   }
 
   private initialiseController(controllers: Controller[]): void {
@@ -43,10 +45,11 @@ class App {
   private async initialiseDatabaseConnect(): Promise<void> {
     const { MONGO_USER, MONGO_PASSWORD, MONGO_CLUSTER } = process.env;
    await mongoose.connect(
-      `mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_CLUSTER}.nyyzhoy.mongodb.net/?retryWrites=true&w=majority`
+      `mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_CLUSTER}.nyyzhoy.mongodb.net/chatApp?retryWrites=true&w=majority`
     );
 
-    console.log('connected to backend chat ');
+    console.log('successfully connect');
+  
   }
 
   public listen(): void {

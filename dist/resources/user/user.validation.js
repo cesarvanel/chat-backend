@@ -7,7 +7,10 @@ const joi_1 = __importDefault(require("joi"));
 const register = joi_1.default.object({
     userName: joi_1.default.string().required(),
     userEmail: joi_1.default.string().email().required(),
+    isAdmin: joi_1.default.boolean(),
     userPwd: joi_1.default.string().required(),
+    userAvatar: joi_1.default.string(),
+    userToken: joi_1.default.string().token()
 });
 const login = joi_1.default.object({
     userEmail: joi_1.default.string().required(),

@@ -2,7 +2,7 @@ import { model, Schema, Types } from "mongoose";
 import bcrypt from "bcrypt";
 import User from "@resources/user/user.interface";
 import { v4 as uuidv4 } from "uuid";
-/*onst UserSchema: Schema<User> = new Schema(
+const UserSchema: Schema<User> = new Schema(
   {
     userName: {
       type: String,
@@ -17,7 +17,7 @@ import { v4 as uuidv4 } from "uuid";
     },
     isAdmin: {
       type: Boolean,
-      required: true,
+      default:false
     },
     userPwd: {
       type: String,
@@ -27,7 +27,8 @@ import { v4 as uuidv4 } from "uuid";
     userAvatar: {
       type: String,
       required: false,
-      trim:true
+      trim:true,
+      default:''
     },
     userToken: {
       type: String,
@@ -36,30 +37,9 @@ import { v4 as uuidv4 } from "uuid";
     },
   },
   { timestamps: true }
-);*/
-
-
-const UserSchema = new Schema(
-  {
-    userName: {
-      type: String,
-      trim: true,
-      required: true,
-    },
-    userEmail: {
-      type: String,
-      required: true,
-      trim: true,
-      unique: true,
-    },
-   
-    userPwd: {
-      type: String,
-      required: true,
-    },
-  },
-  { timestamps: true }
 );
+
+
 
 UserSchema.pre<User>("save", async function (next) {
   if (!this.isModified("userPwd")) {

@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const morgan_1 = __importDefault(require("morgan"));
+const path_1 = __importDefault(require("path"));
 const compression_1 = __importDefault(require("compression"));
 const error_middleware_1 = __importDefault(require("@middlewares/error.middleware"));
 const helmet_1 = __importDefault(require("helmet"));
@@ -35,6 +36,7 @@ class App {
         this.express.use(express_1.default.json());
         this.express.use(express_1.default.urlencoded({ extended: false }));
         this.express.use((0, compression_1.default)());
+        this.express.use(express_1.default.static(path_1.default.join(__dirname, "uploads")));
     }
     initialiseController(controllers) {
         controllers.forEach((controller) => {
@@ -47,8 +49,8 @@ class App {
     initialiseDatabaseConnect() {
         return __awaiter(this, void 0, void 0, function* () {
             const { MONGO_USER, MONGO_PASSWORD, MONGO_CLUSTER } = process.env;
-            yield mongoose_1.default.connect(`mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_CLUSTER}.nyyzhoy.mongodb.net/?retryWrites=true&w=majority`);
-            console.log('connected to backend chat ');
+            yield mongoose_1.default.connect(`mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_CLUSTER}.nyyzhoy.mongodb.net/chatApp?retryWrites=true&w=majority`);
+            console.log('successfully connect');
         });
     }
     listen() {

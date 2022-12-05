@@ -11,21 +11,15 @@ class UserService {
    * @returns a token
    */
 
-  public registerUser = async (
-    userName: string,
-    userEmail: string,
-    userPwd: string
-  ): Promise<string | Error> => {
+  public registerUser = async (data:User): Promise<{} | Error> => {
     try {
-      const user = await this.User.create({
-        userName,
-        userEmail,
-        userPwd,
-      });
+      const user = await this.User.create(data);
       const accessToken = token.CreateToken(user);
-      return accessToken;
-    } catch (error) {
-      throw new Error("enable to create user");
+      const sesUser = {...data, accessToken }
+      return sesUser
+    } catch (error:any) {
+
+      throw new Error(error.message);
     }
   };
 

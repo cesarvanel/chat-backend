@@ -22,18 +22,15 @@ class UserService {
          * @param data
          * @returns a token
          */
-        this.registerUser = (userName, userEmail, userPwd) => __awaiter(this, void 0, void 0, function* () {
+        this.registerUser = (data) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = yield this.User.create({
-                    userName,
-                    userEmail,
-                    userPwd,
-                });
+                const user = yield this.User.create(data);
                 const accessToken = token_1.default.CreateToken(user);
-                return accessToken;
+                const sesUser = Object.assign(Object.assign({}, data), { accessToken });
+                return sesUser;
             }
             catch (error) {
-                throw new Error("enable to create user");
+                throw new Error(error.message);
             }
         });
         this.login = (userEmail, userPwd) => __awaiter(this, void 0, void 0, function* () {

@@ -1,6 +1,12 @@
 
 import { Document } from "mongoose";
 
-interface Chat extends Document{
+ export interface ChatRoom extends Document{
+
+    name:string, 
 
 }
+
+
+
+

@@ -14,41 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 const bcrypt_1 = __importDefault(require("bcrypt"));
-/*onst UserSchema: Schema<User> = new Schema(
-  {
-    userName: {
-      type: String,
-      trim: true,
-      required: true,
-    },
-    userEmail: {
-      type: String,
-      required: true,
-      trim: true,
-      unique: true,
-    },
-    isAdmin: {
-      type: Boolean,
-      required: true,
-    },
-    userPwd: {
-      type: String,
-      required: true,
-    },
-
-    userAvatar: {
-      type: String,
-      required: false,
-      trim:true
-    },
-    userToken: {
-      type: String,
-      required: false,
-      default: uuidv4(),
-    },
-  },
-  { timestamps: true }
-);*/
+const uuid_1 = require("uuid");
 const UserSchema = new mongoose_1.Schema({
     userName: {
         type: String,
@@ -61,9 +27,24 @@ const UserSchema = new mongoose_1.Schema({
         trim: true,
         unique: true,
     },
+    isAdmin: {
+        type: Boolean,
+        default: false
+    },
     userPwd: {
         type: String,
         required: true,
+    },
+    userAvatar: {
+        type: String,
+        required: false,
+        trim: true,
+        default: ''
+    },
+    userToken: {
+        type: String,
+        required: false,
+        default: (0, uuid_1.v4)(),
     },
 }, { timestamps: true });
 UserSchema.pre("save", function (next) {

@@ -37,10 +37,8 @@ class UserController implements Controller {
     next: NextFunction
   ): Promise<Response | void> => {
     try {
-      const {userName, userEmail, userPwd,isAdmin} = req.body
-      console.log('req.body', req.body)
-      const token = await this.UserService.registerUser(userName,userEmail, userPwd);
-      res.status(201).json({ token });
+      const sesUser = await this.UserService.registerUser(req.body);
+      res.status(201).json({ sesUser });
     } catch (error: any) {
       next(new HttpException(400, error.message));
     }
