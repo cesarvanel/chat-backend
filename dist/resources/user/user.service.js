@@ -23,8 +23,14 @@ class UserService {
          * @returns a token
          */
         this.registerUser = (data) => __awaiter(this, void 0, void 0, function* () {
+            let user;
             try {
-                const user = yield this.User.create(data);
+                const email = data.userEmail;
+                user = yield this.User.findOne({ userEmail: email }).exec();
+                if (user) {
+                    throw new Error("this user already exists");
+                }
+                user = yield this.User.create(data);
                 const accessToken = token_1.default.CreateToken(user);
                 const sesUser = Object.assign(Object.assign({}, data), { accessToken });
                 return sesUser;

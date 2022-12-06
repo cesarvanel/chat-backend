@@ -25,6 +25,7 @@ class UserController {
         this.UserService = new user_service_1.default();
         this.register = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log('req.body', req.body);
                 const sesUser = yield this.UserService.registerUser(req.body);
                 res.status(201).json({ sesUser });
             }

@@ -5,6 +5,7 @@ import validationMiddleWare from "@middlewares/validation.middleware";
 import validateUser from "@resources/user/user.validation";
 import UserService from "@resources/user/user.service";
 import authenticated from "@middlewares/authenticated.middleware";
+import userModels from "./user.models";
 
 class UserController implements Controller {
   public path = "/users";
@@ -37,6 +38,7 @@ class UserController implements Controller {
     next: NextFunction
   ): Promise<Response | void> => {
     try {
+      console.log('req.body', req.body)
       const sesUser = await this.UserService.registerUser(req.body);
       res.status(201).json({ sesUser });
     } catch (error: any) {

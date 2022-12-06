@@ -13,21 +13,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const http_1 = __importDefault(require("http"));
 const cors_1 = __importDefault(require("cors"));
 const morgan_1 = __importDefault(require("morgan"));
 const path_1 = __importDefault(require("path"));
 const compression_1 = __importDefault(require("compression"));
 const error_middleware_1 = __importDefault(require("@middlewares/error.middleware"));
+const chat_controller_1 = __importDefault(require("@resources/chat/chat.controller"));
 const helmet_1 = __importDefault(require("helmet"));
 const mongoose_1 = __importDefault(require("mongoose"));
 class App {
     constructor(controllers, port) {
         this.port = port;
         this.express = (0, express_1.default)();
+        this.httpServer = http_1.default.createServer(this.express);
         this.initialiseDatabaseConnect();
         this.initialiseMiddleWare();
         this.initialiseController(controllers);
         this.initialiseErrorHandling();
+        this.initialiseSocket();
     }
     initialiseMiddleWare() {
         this.express.use((0, helmet_1.default)());
@@ -50,8 +54,11 @@ class App {
         return __awaiter(this, void 0, void 0, function* () {
             const { MONGO_USER, MONGO_PASSWORD, MONGO_CLUSTER } = process.env;
             yield mongoose_1.default.connect(`mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_CLUSTER}.nyyzhoy.mongodb.net/chatApp?retryWrites=true&w=majority`);
-            console.log('successfully connect');
+            console.log("successfully connect");
         });
+    }
+    initialiseSocket() {
+        new chat_controller_1.default(this.httpServer);
     }
     listen() {
         this.express.listen(this.port, () => {

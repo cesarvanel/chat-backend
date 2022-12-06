@@ -11,14 +11,20 @@ class UserService {
    * @returns a token
    */
 
-  public registerUser = async (data:User): Promise<{} | Error> => {
+  public registerUser = async (data: User): Promise<{} | Error> => {
+    let user;
     try {
-      const user = await this.User.create(data);
-      const accessToken = token.CreateToken(user);
-      const sesUser = {...data, accessToken }
-      return sesUser
-    } catch (error:any) {
+      const email = data.userEmail;
+      user = await this.User.findOne({ userEmail: email }).exec();
+      if (user) {
+        throw new Error("this user already exists");
+      }
 
+      user = await this.User.create(data);
+      const accessToken = token.CreateToken(user);
+      const sesUser = { ...data, accessToken };
+      return sesUser;
+    } catch (error: any) {
       throw new Error(error.message);
     }
   };

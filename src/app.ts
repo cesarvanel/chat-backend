@@ -1,25 +1,29 @@
 import express, { Application } from "express";
+import http from "http";
 import cors from "cors";
 import morgan from "morgan";
 import path from "path";
 import compression from "compression";
 import Controller from "@utils/interfaces/controller.interface";
 import ErrorMiddleWare from "@middlewares/error.middleware";
+import ServerSocket from "@resources/chat/chat.controller";
 import helmet from "helmet";
 import mongoose from "mongoose";
 
 class App {
   public express: Application;
   public port: number;
+  private httpServer:http.Server
 
   constructor(controllers: Controller[], port: number) {
     this.port = port;
     this.express = express();
-
+    this.httpServer = http.createServer(this.express);
     this.initialiseDatabaseConnect();
     this.initialiseMiddleWare();
     this.initialiseController(controllers);
     this.initialiseErrorHandling();
+    this.initialiseSocket();
   }
 
   private initialiseMiddleWare(): void {
@@ -44,12 +48,15 @@ class App {
 
   private async initialiseDatabaseConnect(): Promise<void> {
     const { MONGO_USER, MONGO_PASSWORD, MONGO_CLUSTER } = process.env;
-   await mongoose.connect(
+    await mongoose.connect(
       `mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_CLUSTER}.nyyzhoy.mongodb.net/chatApp?retryWrites=true&w=majority`
     );
 
-    console.log('successfully connect');
-  
+    console.log("successfully connect");
+  }
+
+  private initialiseSocket(): void {
+    new ServerSocket(this.httpServer);
   }
 
   public listen(): void {

@@ -6,6 +6,7 @@ import UserController from '@resources/user/user.controller';
 
 
 
+
 validateEnv()
 
 const app =new App([new UserController()], Number(process.env.PORT))
