@@ -5,6 +5,7 @@ const register = Joi.object({
   userEmail: Joi.string().email().required(),
   isAdmin: Joi.boolean(),
   userPwd: Joi.string().required(),
+  confPwd:Joi.ref('userPwd'),
   userAvatar: Joi.string(),
   userToken: Joi.string().token()
 });

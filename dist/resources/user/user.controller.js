@@ -25,9 +25,9 @@ class UserController {
         this.UserService = new user_service_1.default();
         this.register = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log('req.body', req.body);
+                console.log("req.body", req.body);
                 const sesUser = yield this.UserService.registerUser(req.body);
-                res.status(201).json({ sesUser });
+                res.status(201).json({ sesUser, success: true });
             }
             catch (error) {
                 next(new http_exception_1.default(400, error.message));
@@ -36,8 +36,8 @@ class UserController {
         this.login = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const { userEmail, userPwd } = req.body;
-                const token = yield this.UserService.login(userEmail, userPwd);
-                res.status(200).json({ token });
+                const sesUser = yield this.UserService.login(userEmail, userPwd);
+                res.status(200).json({ sesUser, success: true });
             }
             catch (error) {
                 next(new http_exception_1.default(400, error.message));
@@ -46,11 +46,21 @@ class UserController {
         this.getUser = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
                 if (!req.user) {
-                    return next(new http_exception_1.default(200, 'No logged in user'));
+                    return next(new http_exception_1.default(200, "No logged in user"));
                 }
                 res.status(200).json({ user: req.user });
             }
             catch (error) {
+                console.log(error);
+            }
+        });
+        this.getAllUser = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const allUser = yield this.UserService.get_All_user();
+                res.json({ allUser });
+            }
+            catch (error) {
+                next(new http_exception_1.default(400, "something wrong"));
             }
         });
         this.initialiseRoute();
@@ -59,6 +69,7 @@ class UserController {
         this.router.post(`${this.path}/register`, (0, validation_middleware_1.default)(user_validation_1.default.register), this.register);
         this.router.post(`${this.path}/login`, (0, validation_middleware_1.default)(user_validation_1.default.login), this.login);
         this.router.get(`${this.path}`, authenticated_middleware_1.default, this.getUser);
+        this.router.get(`${this.path}/all_users`, this.getAllUser);
     }
 }
 exports.default = UserController;

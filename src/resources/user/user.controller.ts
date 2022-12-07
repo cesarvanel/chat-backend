@@ -5,7 +5,6 @@ import validationMiddleWare from "@middlewares/validation.middleware";
 import validateUser from "@resources/user/user.validation";
 import UserService from "@resources/user/user.service";
 import authenticated from "@middlewares/authenticated.middleware";
-import userModels from "./user.models";
 
 class UserController implements Controller {
   public path = "/users";
@@ -30,6 +29,8 @@ class UserController implements Controller {
     );
 
     this.router.get(`${this.path}`, authenticated, this.getUser);
+
+    this.router.get(`${this.path}/all_users`, this.getAllUser);
   }
 
   private register = async (
@@ -38,9 +39,9 @@ class UserController implements Controller {
     next: NextFunction
   ): Promise<Response | void> => {
     try {
-      console.log('req.body', req.body)
+      console.log("req.body", req.body);
       const sesUser = await this.UserService.registerUser(req.body);
-      res.status(201).json({ sesUser });
+      res.status(201).json({ sesUser, success: true });
     } catch (error: any) {
       next(new HttpException(400, error.message));
     }
@@ -53,8 +54,8 @@ class UserController implements Controller {
   ): Promise<Response | void> => {
     try {
       const { userEmail, userPwd } = req.body;
-      const token = await this.UserService.login(userEmail, userPwd);
-      res.status(200).json({ token });
+      const sesUser = await this.UserService.login(userEmail, userPwd);
+      res.status(200).json({ sesUser, success: true });
     } catch (error: any) {
       next(new HttpException(400, error.message));
     }
@@ -66,13 +67,25 @@ class UserController implements Controller {
     next: NextFunction
   ): Promise<Response | void> => {
     try {
-      if(!req.user){
-        return next(new HttpException(200, 'No logged in user'));
+      if (!req.user) {
+        return next(new HttpException(200, "No logged in user"));
       }
-      res.status(200).json({user:req.user})
-      
+      res.status(200).json({ user: req.user });
     } catch (error) {
-      
+      console.log(error);
+    }
+  };
+
+  private getAllUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> => {
+    try {
+      const allUser = await this.UserService.get_All_user();
+      res.json({ allUser });
+    } catch (error) {
+      next(new HttpException(400, "something wrong"));
     }
   };
 }

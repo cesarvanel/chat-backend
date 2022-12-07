@@ -15,14 +15,15 @@ class UserService {
     let user;
     try {
       const email = data.userEmail;
-      user = await this.User.findOne({ userEmail: email }).exec();
+      user = await this.User.findOne({ userEmail: email });
       if (user) {
         throw new Error("this user already exists");
       }
 
       user = await this.User.create(data);
+      const { userName, userEmail, userAvatar,isAdmin } = data;
       const accessToken = token.CreateToken(user);
-      const sesUser = { ...data, accessToken };
+      const sesUser = { userName, userEmail, userAvatar, accessToken, isAdmin };
       return sesUser;
     } catch (error: any) {
       throw new Error(error.message);
@@ -32,25 +33,31 @@ class UserService {
   public login = async (
     userEmail: string,
     userPwd: string
-  ): Promise<string | Error> => {
+  ): Promise<{} | Error> => {
     try {
-      const user = await this.User.findOne({ userEmail });
+      const user = await this.User.findOne({ userEmail })
       if (!user) {
         throw new Error("Enable to find the user with this user Address");
       }
 
       const isValid = await user.isValidPassword(userPwd);
       if (isValid) {
-        return token.CreateToken(user);
+        const accessToken = token.CreateToken(user);
+        const sesUser = { ...user, accessToken };
+        return sesUser;
       } else {
         throw new Error("Wrong credentials given");
       }
     } catch (error) {
-      throw new Error("enable to login user");
+      throw new Error("Wrong credentials given");
     }
   };
 
-  public update_profile = async (userAvatar: string) => {};
+  public get_All_user = async (): Promise<User[] | Error> => {
+    const allUser = await this.User.find({}).select('userName userAvatar userEmail _id isAdmin')
+
+    return allUser;
+  };
 }
 
 export default UserService;

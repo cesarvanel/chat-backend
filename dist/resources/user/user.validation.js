@@ -9,6 +9,7 @@ const register = joi_1.default.object({
     userEmail: joi_1.default.string().email().required(),
     isAdmin: joi_1.default.boolean(),
     userPwd: joi_1.default.string().required(),
+    confPwd: joi_1.default.ref('userPwd'),
     userAvatar: joi_1.default.string(),
     userToken: joi_1.default.string().token()
 });

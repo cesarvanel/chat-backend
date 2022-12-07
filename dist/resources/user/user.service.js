@@ -26,13 +26,14 @@ class UserService {
             let user;
             try {
                 const email = data.userEmail;
-                user = yield this.User.findOne({ userEmail: email }).exec();
+                user = yield this.User.findOne({ userEmail: email });
                 if (user) {
                     throw new Error("this user already exists");
                 }
                 user = yield this.User.create(data);
+                const { userName, userEmail, userAvatar, isAdmin } = data;
                 const accessToken = token_1.default.CreateToken(user);
-                const sesUser = Object.assign(Object.assign({}, data), { accessToken });
+                const sesUser = { userName, userEmail, userAvatar, accessToken, isAdmin };
                 return sesUser;
             }
             catch (error) {
@@ -47,17 +48,22 @@ class UserService {
                 }
                 const isValid = yield user.isValidPassword(userPwd);
                 if (isValid) {
-                    return token_1.default.CreateToken(user);
+                    const accessToken = token_1.default.CreateToken(user);
+                    const sesUser = Object.assign(Object.assign({}, user), { accessToken });
+                    return sesUser;
                 }
                 else {
                     throw new Error("Wrong credentials given");
                 }
             }
             catch (error) {
-                throw new Error("enable to login user");
+                throw new Error("Wrong credentials given");
             }
         });
-        this.update_profile = (userAvatar) => __awaiter(this, void 0, void 0, function* () { });
+        this.get_All_user = () => __awaiter(this, void 0, void 0, function* () {
+            const allUser = yield this.User.find({}).select('userName userAvatar userEmail _id isAdmin');
+            return allUser;
+        });
     }
 }
 exports.default = UserService;
