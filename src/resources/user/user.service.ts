@@ -21,7 +21,7 @@ class UserService {
       }
 
       user = await this.User.create(data);
-      const { userName, userEmail, userAvatar,isAdmin } = data;
+      const { userName, userEmail, userAvatar, isAdmin } = data;
       const accessToken = token.CreateToken(user);
       const sesUser = { userName, userEmail, userAvatar, accessToken, isAdmin };
       return sesUser;
@@ -35,7 +35,7 @@ class UserService {
     userPwd: string
   ): Promise<{} | Error> => {
     try {
-      const user = await this.User.findOne({ userEmail })
+      const user = await this.User.findOne({ userEmail });
       if (!user) {
         throw new Error("Enable to find the user with this user Address");
       }
@@ -54,7 +54,9 @@ class UserService {
   };
 
   public get_All_user = async (): Promise<User[] | Error> => {
-    const allUser = await this.User.find({}).select('userName userAvatar userEmail _id isAdmin')
+    const allUser = await this.User.find({}).select(
+      "userName userAvatar userEmail _id isAdmin"
+    );
 
     return allUser;
   };

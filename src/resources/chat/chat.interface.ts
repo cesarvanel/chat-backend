@@ -1,3 +1,4 @@
+import User from "@resources/user/user.interface";
 import { Document } from "mongoose";
 
 export interface ChatRoom extends Document {
@@ -6,7 +7,7 @@ export interface ChatRoom extends Document {
 
 export const EVENTS = {
   connection: "connection",
-  disconnect:"disconnect",
+  disconnect: "disconnect",
   CLIENT: {
     CREATE_ROOM: "CREATE_ROOM",
     JOIN_ROOM: "JOIN_ROOM",
@@ -18,3 +19,5 @@ export const EVENTS = {
     ROOM_MESSAGE: "ROOM_MESSAGE",
   },
 };
+
+

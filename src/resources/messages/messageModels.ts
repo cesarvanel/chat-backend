@@ -1,6 +1,6 @@
-import { ChatRoom } from "../chat.interface";
-
+import { ChatRoom } from "../chat/chat.interface";
 import { model, Schema, Types } from "mongoose";
+
 
 const messageSchema = new Schema(
   {
@@ -9,11 +9,14 @@ const messageSchema = new Schema(
         type: String,
         required: true,
       },
-      date: Date.now(),
+      date: {
+        type: Date,
+        default: new Date().toLocaleDateString(),
+      },
     },
     users: Array,
     sender: {
-      type: Types.ObjectId,
+      type: String,
       ref: "User",
       required: true,
     },
@@ -21,4 +24,4 @@ const messageSchema = new Schema(
   { timestamps: true }
 );
 
-export default model("chatRoom", messageSchema);
+export default model("Messages", messageSchema);

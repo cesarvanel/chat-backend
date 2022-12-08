@@ -8,6 +8,7 @@ require("module-alias/register");
 const validateEnv_1 = __importDefault(require("@utils/validateEnv"));
 const app_1 = __importDefault(require("./app"));
 const user_controller_1 = __importDefault(require("@resources/user/user.controller"));
+const message_controller_1 = __importDefault(require("@resources/messages/message.controller"));
 (0, validateEnv_1.default)();
-const app = new app_1.default([new user_controller_1.default()], Number(process.env.PORT));
+const app = new app_1.default([new user_controller_1.default(), new message_controller_1.default()], Number(process.env.PORT));
 app.listen();

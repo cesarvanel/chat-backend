@@ -10,6 +10,7 @@ import { EVENTS } from "./chat.interface";
 class ServerSocket {
   public static instance: ServerSocket;
   public io: Server;
+  
 
   public users: { [uid: string]: string };
 

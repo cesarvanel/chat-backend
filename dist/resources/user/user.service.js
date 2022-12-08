@@ -61,7 +61,7 @@ class UserService {
             }
         });
         this.get_All_user = () => __awaiter(this, void 0, void 0, function* () {
-            const allUser = yield this.User.find({}).select('userName userAvatar userEmail _id isAdmin');
+            const allUser = yield this.User.find({}).select("userName userAvatar userEmail _id isAdmin");
             return allUser;
         });
     }
