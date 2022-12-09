@@ -7,13 +7,15 @@ class MessageService {
   public addMessage = async (
     msg: string,
     sender: string,
-    users: []
+    users: [],
+    receiver:string
   ): Promise<object | Error> => {
     try {
       const data = await this.Models.create({
         message: { text: msg },
         users: [users],
         sender: sender,
+        receiver:receiver
       });
       return data;
     } catch (error: any) {
@@ -26,7 +28,7 @@ class MessageService {
     receiver: any
   ): Promise<Error | any> => {
     try {
-      const messages = await this.Models.find({users:{$all:[sender,receiver]}})
+      const messages = await this.Models.find({sender:sender,receiver:receiver})
       const projetMessage = messages.map((msg:any) =>{
         return{
           fromMe:msg.sender === sender,

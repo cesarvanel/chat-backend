@@ -18,5 +18,10 @@ const messageSchema = new mongoose_1.Schema({
         ref: "User",
         required: true,
     },
+    receiver: {
+        type: String,
+        ref: "User",
+        required: true
+    }
 }, { timestamps: true });
 exports.default = (0, mongoose_1.model)("Messages", messageSchema);

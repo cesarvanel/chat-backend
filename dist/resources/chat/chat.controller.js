@@ -1,25 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const socket_io_1 = require("socket.io");
-const chat_interface_1 = require("./chat.interface");
 class ServerSocket {
     constructor(server) {
-        this.listener = (socket) => {
-            console.info("Message from socket", socket.id);
-            socket.on('handshake', () => {
-                console.log("hanshake received with", socket.id);
-            });
-            socket.on(chat_interface_1.EVENTS.disconnect, () => {
-                console.info("Disconnect received from", socket.id);
-            });
-        };
+        this.OnlineUsers = [];
+        this.Online = new Map();
         ServerSocket.instance = this;
-        this.users = {};
+        this.OnlineUsers = [];
         this.io = new socket_io_1.Server(server, {
-            serveClient: false,
-            pingInterval: 10000,
-            pingTimeout: 5000,
-            cookie: false,
             cors: { origin: "*" },
         });
         /*this.io.use(async (socket, next) => {
@@ -33,7 +21,9 @@ class ServerSocket {
             next();
           }
         });*/
-        this.io.on(chat_interface_1.EVENTS.connection, this.listener);
+        this.io.on("connection", (socket) => {
+            console.log(socket.id); // ojIckSD2jqNzOqIrAGzL
+        });
         console.log("socket service started");
     }
 }

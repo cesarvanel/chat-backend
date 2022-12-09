@@ -10,18 +10,12 @@ import { EVENTS } from "./chat.interface";
 class ServerSocket {
   public static instance: ServerSocket;
   public io: Server;
-  
-
-  public users: { [uid: string]: string };
+  public OnlineUsers = [];
 
   constructor(server: HTTPSever) {
     ServerSocket.instance = this;
-    this.users = {};
+    this.OnlineUsers = [];
     this.io = new Server(server, {
-      serveClient: false,
-      pingInterval: 10000,
-      pingTimeout: 5000,
-      cookie: false,
       cors: { origin: "*" },
     });
 
@@ -36,22 +30,31 @@ class ServerSocket {
         next();
       }
     });*/
-    this.io.on(EVENTS.connection, this.listener);
-    console.log("socket service started")
-    
+    this.io.on("connection", (socket) => {
+      console.log(socket.id); // ojIckSD2jqNzOqIrAGzL
+    });
+    console.log("socket service started");
   }
 
-  listener = (socket: Socket) => {
+  public Online = new Map();
+
+  /*listener = (socket: Socket) => {
     console.info("Message from socket", socket.id);
-    
-    socket.on('handshake', ()=>{
-        console.log("hanshake received with", socket.id)
-    })
+    socket.on(EVENTS.ADD_USER, (userEmail: any) => {
+      this.Online.set(userEmail, socket.id);
+    });
+
+    socket.on(EVENTS.SEND_MESSAGE, (data: any) => {
+      const sendUsersocket = this.Online.get(data.userEmail);
+      if (sendUsersocket) {
+        socket.to(sendUsersocket).emit(EVENTS.RECEIVE_MESSAGE, data.msg);
+      }
+    });
 
     socket.on(EVENTS.disconnect, () => {
       console.info("Disconnect received from", socket.id);
     });
-  };
+  };*/
 }
 
 export default ServerSocket;

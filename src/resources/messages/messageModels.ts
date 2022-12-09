@@ -20,6 +20,11 @@ const messageSchema = new Schema(
       ref: "User",
       required: true,
     },
+    receiver:{
+      type:String,
+      ref:"User",
+      required:true
+    }
   },
   { timestamps: true }
 );

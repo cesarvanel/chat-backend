@@ -16,12 +16,13 @@ const messageModels_1 = __importDefault(require("./messageModels"));
 class MessageService {
     constructor() {
         this.Models = messageModels_1.default;
-        this.addMessage = (msg, sender, users) => __awaiter(this, void 0, void 0, function* () {
+        this.addMessage = (msg, sender, users, receiver) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const data = yield this.Models.create({
                     message: { text: msg },
                     users: [users],
                     sender: sender,
+                    receiver: receiver
                 });
                 return data;
             }
@@ -31,7 +32,7 @@ class MessageService {
         });
         this.getMessage = (sender, receiver) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const messages = yield this.Models.find({ users: { $all: [sender, receiver] } });
+                const messages = yield this.Models.find({ sender: sender, receiver: receiver });
                 const projetMessage = messages.map((msg) => {
                     return {
                         fromMe: msg.sender === sender,

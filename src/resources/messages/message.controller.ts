@@ -25,8 +25,13 @@ class MessageController implements Controller {
     next: NextFunction
   ): Promise<Response | void> => {
     try {
-      const { msg, users, sender } = req.body;
-      const Msg = await this.MessageService.addMessage(msg, sender,users);
+      const { msg, users, sender, receiver } = req.body;
+      const Msg = await this.MessageService.addMessage(
+        msg,
+        sender,
+        users,
+        receiver
+      );
       res.status(201).json({ success: true, Msg });
     } catch (error: any) {
       next(new HttpException(400, error.message));
@@ -39,12 +44,12 @@ class MessageController implements Controller {
     next: NextFunction
   ): Promise<Response | void> => {
     try {
-      const {sender, receiver} = req.query
-      const Msg = await this.MessageService.getMessage(sender,receiver)
-      if(!Msg){
-        res.status(400).json({error:"pas de message desole"})
+      const { sender, receiver } = req.query;
+      const Msg = await this.MessageService.getMessage(sender, receiver);
+      if (!Msg) {
+        res.status(400).json({ error: "pas de message desole" });
       }
-      res.status(200).json({ data:Msg, success: true });
+      res.status(200).json({ data: Msg, success: true });
     } catch (error: any) {
       next(new HttpException(400, error.message));
     }

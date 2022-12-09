@@ -26,8 +26,8 @@ class MessageController {
         };
         this.addMessage = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { msg, users, sender } = req.body;
-                const Msg = yield this.MessageService.addMessage(msg, sender, users);
+                const { msg, users, sender, receiver } = req.body;
+                const Msg = yield this.MessageService.addMessage(msg, sender, users, receiver);
                 res.status(201).json({ success: true, Msg });
             }
             catch (error) {
