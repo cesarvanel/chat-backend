@@ -30,13 +30,30 @@ class ServerSocket {
         next();
       }
     });*/
-    this.io.on("connection", (socket) => {
-      console.log(socket.id); // ojIckSD2jqNzOqIrAGzL
+    this.io.on(EVENTS.connection, (socket: Socket) => {
+      console.log("socket service started");
+      console.log(socket.id);
+
+      socket.on(EVENTS.ADD_USER, (email: any) => {
+        this.OnlineUser.set(email, socket.id);
+      });
+
+      socket.on(EVENTS.SEND_MESSAGE, (data) => {
+        console.log(data)
+        const sendUsersocket = this.OnlineUser.get(data.receiver);
+        
+        if (sendUsersocket) {
+          socket.to(sendUsersocket).emit(EVENTS.RECEIVE_MESSAGE, data.msg);
+        }
+      });
+
+      socket.on("connect_error", (err) => {
+        console.log(`connect_error due to ${err.message}`);
+      });
     });
-    console.log("socket service started");
   }
 
-  public Online = new Map();
+  public OnlineUser = new Map();
 
   /*listener = (socket: Socket) => {
     console.info("Message from socket", socket.id);

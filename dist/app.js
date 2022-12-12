@@ -27,11 +27,11 @@ class App {
         this.port = port;
         this.express = (0, express_1.default)();
         this.httpServer = http_1.default.createServer(this.express);
+        new chat_controller_1.default(this.httpServer);
         this.initialiseDatabaseConnect();
         this.initialiseMiddleWare();
         this.initialiseController(controllers);
         this.initialiseErrorHandling();
-        this.initialiseSocket();
     }
     initialiseMiddleWare() {
         this.express.use((0, helmet_1.default)());
@@ -57,11 +57,8 @@ class App {
             console.log("successfully connect");
         });
     }
-    initialiseSocket() {
-        new chat_controller_1.default(this.httpServer);
-    }
     listen() {
-        this.express.listen(this.port, () => {
+        this.httpServer.listen(this.port, () => {
             console.log(`Chat Backend is listenenig on port ${this.port}`);
         });
     }

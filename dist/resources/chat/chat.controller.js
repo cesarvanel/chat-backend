@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const socket_io_1 = require("socket.io");
+const chat_interface_1 = require("./chat.interface");
 class ServerSocket {
     constructor(server) {
         this.OnlineUsers = [];
-        this.Online = new Map();
+        this.OnlineUser = new Map();
         ServerSocket.instance = this;
         this.OnlineUsers = [];
         this.io = new socket_io_1.Server(server, {
@@ -21,10 +22,23 @@ class ServerSocket {
             next();
           }
         });*/
-        this.io.on("connection", (socket) => {
-            console.log(socket.id); // ojIckSD2jqNzOqIrAGzL
+        this.io.on(chat_interface_1.EVENTS.connection, (socket) => {
+            console.log("socket service started");
+            console.log(socket.id);
+            socket.on(chat_interface_1.EVENTS.ADD_USER, (email) => {
+                this.OnlineUser.set(email, socket.id);
+            });
+            socket.on(chat_interface_1.EVENTS.SEND_MESSAGE, (data) => {
+                console.log(data);
+                const sendUsersocket = this.OnlineUser.get(data.receiver);
+                if (sendUsersocket) {
+                    socket.to(sendUsersocket).emit(chat_interface_1.EVENTS.RECEIVE_MESSAGE, data.msg);
+                }
+            });
+            socket.on("connect_error", (err) => {
+                console.log(`connect_error due to ${err.message}`);
+            });
         });
-        console.log("socket service started");
     }
 }
 exports.default = ServerSocket;

@@ -19,11 +19,12 @@ class App {
     this.port = port;
     this.express = express();
     this.httpServer = http.createServer(this.express);
+    new ServerSocket(this.httpServer);
     this.initialiseDatabaseConnect();
     this.initialiseMiddleWare();
     this.initialiseController(controllers);
     this.initialiseErrorHandling();
-    this.initialiseSocket();
+   
   }
 
   private initialiseMiddleWare(): void {
@@ -34,6 +35,7 @@ class App {
     this.express.use(express.urlencoded({ extended: false }));
     this.express.use(compression());
     this.express.use(express.static(path.join(__dirname, "uploads")));
+    
   }
 
   private initialiseController(controllers: Controller[]): void {
@@ -55,12 +57,8 @@ class App {
     console.log("successfully connect");
   }
 
-  private initialiseSocket(): void {
-    new ServerSocket(this.httpServer);
-  }
-
   public listen(): void {
-    this.express.listen(this.port, () => {
+    this.httpServer.listen(this.port, () => {
       console.log(`Chat Backend is listenenig on port ${this.port}`);
     });
   }

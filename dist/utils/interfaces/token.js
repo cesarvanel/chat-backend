@@ -16,7 +16,7 @@ exports.VerifyToken = exports.CreateToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const CreateToken = (User) => {
     return jsonwebtoken_1.default.sign({ id: User._id }, process.env.JWT_SECRET, {
-        expiresIn: "1d",
+        expiresIn: "10d",
     });
 };
 exports.CreateToken = CreateToken;
